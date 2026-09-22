@@ -16,6 +16,9 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;background-ima
 .option{display:flex;gap:12px;align-items:flex-start;border:1.5px solid #d9e8fb;border-radius:17px;padding:14px 15px;margin:10px 0;background:white;cursor:pointer;transition:.15s} .option:hover{transform:translateY(-1px);border-color:#8dbbfa;background:#f8fbff} .letter{width:30px;height:30px;display:grid;place-items:center;flex:0 0 30px;border-radius:10px;background:#edf5ff;color:var(--blue2);font-weight:900} .option.selected{border-color:var(--blue);background:#eef6ff} .option.correct{border-color:#56c873;background:#f0fff4} .option.wrong{border-color:#ef7474;background:#fff4f4} .option.correct .letter{background:#dcfce7;color:#166534} .option.wrong .letter{background:#fee2e2;color:#991b1b}
 .nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px} .scorebig{font-size:60px;font-weight:950;color:var(--blue2);letter-spacing:-.06em} .resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px} .review{border-top:1px solid #e2edf9;padding:14px 0} .review strong{display:block;margin-bottom:6px} .mini{font-size:13px;color:var(--muted)}
 .note{font-size:12px;color:var(--muted);margin-top:12px} @media(max-width:700px){.grid,.resultgrid{grid-template-columns:1fr}.facts{grid-template-columns:repeat(3,1fr)}.wrap{padding:14px}.card{padding:17px;border-radius:20px}}
+body, .btn, input, select, button, h1, h2, h3 { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif !important; 
+}
 body.locked { overflow: hidden; }
 body.locked .wrap { filter: blur(10px); pointer-events: none; user-select: none; transition: filter 0.3s; }
 #security-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(3px); z-index: 999999; display: flex; justify-content: center; align-items: center; }
@@ -36,17 +39,17 @@ body.locked .wrap { filter: blur(10px); pointer-events: none; user-select: none;
             </div>
         </div>
         <div id="step-2" class="hidden">
-            <h2>Lớp phó tên gì (nhập mật pass)</h2>
+            <h2>Lớp phó tên gì (nhập mật khẩu)</h2>
             <input type="text" id="secret-pass" placeholder="Nhập câu trả lời..." style="margin-bottom: 15px; text-align: center; font-weight: bold;">
-            <button id="btn-submit-pass" class="btn primary" style="width: 100%;">Xác nhận mở khóa</button>
+            <button id="btn-submit-pass" class="btn primary" style="width: 100%;">Tốt rồi</button>
         </div>
         <div class="warning-text">
-            Chú ý: Vui lòng không public hay share cho người khác nếu chưa được cho phép xin cảm ơn.
+            Chú ý: Vui lòng không public hay share khác nếu chưa được cấp phép vì lý do bảo mật, xin cảm ơn!
         </div>
     </div>
 </div>
 <div class="wrap">
-<div class="top"><div class="logo">⚗️</div><div><h1>PHƯƠNG PHÁP LUẬN NGHIÊN CỨU KHOA HỌC</h1><div class="sub">Ôn tập giữa kỳ • học theo chương hoặc trộn câu</div></div></div>
+<div class="top"><div class="logo">⚗️</div><div><h1>PHƯƠNG PHÁP LUẬN NGHIÊN CỨU KHOA HỌC 333 CÂU</h1><div class="sub">Ôn tập giữa kỳ • học theo chương hoặc trộn câu • Chúc các bạn thi tốt !</div></div></div>
 <section id="setup" class="card">
 <h2 style="margin-top:0">Thiết lập bộ câu hỏi</h2>
 <div class="grid"><div><label>Chọn chương / nhóm nội dung</label><select id="chapter"><option value="all">Tất cả 333 câu</option></select><div class="note">Các “chương” được nhóm theo chủ đề vì file nguồn không ghi tiêu đề chương chính thức.</div></div>
@@ -67,19 +70,27 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnSubmitPass = document.getElementById('btn-submit-pass');
     const secretPass = document.getElementById('secret-pass');
     const overlay = document.getElementById('security-overlay');
+    let hasMovedOnce = false; 
     function runAway() {
         const maxX = window.innerWidth - btnNo.offsetWidth - 20;
         const maxY = window.innerHeight - btnNo.offsetHeight - 20;
         const randomX = Math.max(10, Math.floor(Math.random() * maxX));
-        const randomY = Math.max(10, Math.floor(Math.random() * maxY));    
+        const randomY = Math.max(10, Math.floor(Math.random() * maxY));
         btnNo.style.position = 'fixed';
         btnNo.style.left = randomX + 'px';
         btnNo.style.top = randomY + 'px';
         btnNo.style.zIndex = '9999999';
     }
-    btnNo.addEventListener('mouseover', runAway);
-    btnNo.addEventListener('click', runAway);
-
+    btnNo.addEventListener('click', function(e) {
+        e.preventDefault();
+        hasMovedOnce = true;
+        runAway();
+    });
+    btnNo.addEventListener('mouseover', function() {
+        if (hasMovedOnce) {
+            runAway();
+        }
+    });
     btnYes.addEventListener('click', () => {
         step1.classList.add('hidden');
         step2.classList.remove('hidden');
@@ -90,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
             overlay.style.display = 'none';
             document.body.classList.remove('locked');
         } else {
-            alert('Sai mật khẩu, vui lòng liên hệ quản trị viên để nhận mật khẩu đúng!');
+            alert('Sai mật khẩu. Vui lòng liên hệ quản trị viên để nhận mật khẩu đúng!');
         }
     });
 });
